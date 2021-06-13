@@ -213,7 +213,10 @@ export const Register: React.FC<IRegisterProp> = (props) => {
                 ))}
               </div>
             ) : (
-              <Loading />
+              <>
+                <Loading />
+                <div>{positionsState.message}</div>
+              </>
             )}
             <div className="form-register__upload">
               <input

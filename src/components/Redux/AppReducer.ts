@@ -1,5 +1,4 @@
 import { InferActionType, ThunkActionType } from "./Store";
-import { testTaskApi } from "./API";
 
 //Default State
 const initialState = {
@@ -40,6 +39,12 @@ export const appReducer = (
 export const thunkGetToken = (
   url: string
 ): ThunkActionType<ActionsAppType> => async (dispatch) => {
-  const res = await testTaskApi<ITokenResponse>(url);
-  dispatch(appActions.getToken(res));
+  await fetch(url)
+    .then((res) => res.json())
+    .then((res) => {
+      dispatch(appActions.getToken(res));
+    })
+    .catch((error) => {
+      throw new Error(error);
+    });
 };

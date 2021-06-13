@@ -1,5 +1,4 @@
 import { InferActionType, ThunkActionType } from "./Store";
-import { IAddPerson } from "../blocks/Register";
 
 export interface IUsers {
   id: string;
@@ -19,10 +18,6 @@ interface IResponseGetUsers {
   total_users: number;
   users: Array<IUsers>;
   links: { next_url: string | null; prev_url: string | null };
-}
-interface IAddResponsePerson extends IAddPerson {
-  id: number;
-  message: string;
 }
 interface IFails {
   count: string[];

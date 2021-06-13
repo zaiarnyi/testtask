@@ -1,5 +1,4 @@
 import { InferActionType, ThunkActionType } from "./Store";
-import { testTaskApi } from "./API";
 
 export interface IPositions {
   id: number;
@@ -53,8 +52,6 @@ export const positionsReducer = (
 export const thunkGetPosition = (url: string): ThunkActionType => async (
   dispatch
 ) => {
-  // const res = await testTaskApi<IResponsePosition>(url);
-  // dispatch(positionActions.getPosition(res));
   await fetch(url)
     .then((res) => {
       if (res.status === 404) {
