@@ -24,9 +24,16 @@
     align-items: center;
     position: relative;
     z-index: 6;
+    padding-top: 12px;
+    padding-left: 6px;
+    img{
+      width: 38px;
+      height: 26px;
+    }
     span{
       text-transform: uppercase;
       color:rgba(0, 0, 0, 0.87);
+      padding-top: 5px;
     }
   }
   &__menu{}

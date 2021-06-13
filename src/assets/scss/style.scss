@@ -133,18 +133,3 @@ body {
   line-height: 26px;
   color: rgba(0, 0, 0, 0.87);
 }
-.pixel{
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background-image: url('../img/pixel.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 3908px;
-  opacity: .3;
-  z-index: 10;
-  // transform: translate(0,-10px);
-  //display: none;
-}
