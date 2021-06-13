@@ -54,7 +54,6 @@ export const Users: React.FC<IUsersProp> = React.memo(({ onShowMore }) => {
               ) : (
                 <>
                   <Loading />
-                  <div>{usersState.message.usersMSG}</div>
                 </>
               )}
             </div>
@@ -62,7 +61,6 @@ export const Users: React.FC<IUsersProp> = React.memo(({ onShowMore }) => {
         ) : (
           <>
             <Loading />
-            <div>{usersState.message.usersMSG}</div>
           </>
         )}
       </div>

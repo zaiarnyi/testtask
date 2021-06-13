@@ -7,9 +7,7 @@ interface IModalProp {
 }
 
 export const Modal: React.FC<IModalProp> = ({ hide }) => {
-  const text = useSelector(
-    (state: AppStateType) => state.users.message.personMSG
-  );
+  const text = useSelector((state: AppStateType) => state.users.message);
   return (
     <div className={"modal"}>
       <div className="modal__container">

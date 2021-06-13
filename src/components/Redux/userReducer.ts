@@ -29,7 +29,7 @@ interface IFails {
   page: string[];
 }
 export const URL_RESPONSE =
-  "https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=3";
+  "https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6";
 
 //Default State
 const initialState = {
@@ -42,10 +42,11 @@ const initialState = {
   isLoadingUsers: false, //При загрузки Юзеров
   isLoadingPerson: false, // При регистрации
   isLoadingMoreUsers: true, // Подрузка новых Юзеров
-  message: {
-    personMSG: null as null | string,
-    usersMSG: null as null | string,
-  },
+  message: null as null | string,
+  // message: {
+  //   personMSG: null as null | string,
+  //   usersMSG: null as null | string,
+  // },
   fails: null as null | IFails,
 };
 //Actions
@@ -62,10 +63,10 @@ export const userActions = {
       type: "TASTTEST/TOGGLE_STATUS",
       payload: { name, value },
     } as const),
-  messageResponse: (name: "users" | "person", value: string) =>
+  messageResponse: (value: string) =>
     ({
       type: "TASKTEST/ERROR_RESPONSE",
-      payload: { name, value },
+      payload: value,
     } as const),
 };
 
@@ -102,18 +103,10 @@ export const usersReducers = (
       }
       return state;
     case "TASKTEST/ERROR_RESPONSE":
-      if (actions.payload.name === "users") {
-        return {
-          ...state,
-          message: { ...state.message, usersMSG: actions.payload.value },
-        };
-      } else if (actions.payload.name === "person") {
-        return {
-          ...state,
-          message: { ...state.message, personMSG: actions.payload.value },
-        };
-      }
-      return state;
+      return {
+        ...state,
+        message: actions.payload,
+      };
     default:
       return state;
   }
@@ -136,12 +129,12 @@ export const thunkSetUser = (
       if (typeof res !== "string") {
         dispatch(userActions.setUserApi(res));
       } else {
-        dispatch(userActions.messageResponse("users", res));
+        dispatch(userActions.messageResponse(res));
       }
     })
     .catch((error) => {
       throw new Error(error);
-      dispatch(userActions.messageResponse("users", "Ловим ошибку"));
+      dispatch(userActions.messageResponse("Ловим ошибку"));
     });
 };
 export const thunkShowMore = (
@@ -162,12 +155,12 @@ export const thunkShowMore = (
         dispatch(userActions.showMoreStaff(res));
         dispatch(userActions.toggleStatus("users", true));
       } else {
-        dispatch(userActions.messageResponse("users", res));
+        dispatch(userActions.messageResponse(res));
       }
     })
     .catch((error) => {
       throw new Error(error);
-      dispatch(userActions.messageResponse("users", "Ловим ошибку"));
+      dispatch(userActions.messageResponse("Ловим ошибку"));
     });
 };
 
@@ -197,14 +190,14 @@ export const thunkSetRegisterPerson = (
     .then((res) => {
       if (typeof res !== "string") {
         dispatch(thunkSetUser(URL_RESPONSE));
-        dispatch(userActions.messageResponse("person", res.message));
+        dispatch(userActions.messageResponse(res.message));
       } else {
-        dispatch(userActions.messageResponse("person", res));
+        dispatch(userActions.messageResponse(res));
       }
       dispatch(userActions.toggleStatus("person", true));
     })
     .catch((error) => {
-      dispatch(userActions.messageResponse("person", "прилетела ошибочка"));
+      dispatch(userActions.messageResponse("прилетела ошибочка"));
       dispatch(userActions.toggleStatus("person", true));
       throw new Error(error);
     });
