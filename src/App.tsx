@@ -39,6 +39,15 @@ function App() {
       )
     );
   }, []);
+  useEffect(() => {
+    const body = document.body as HTMLElement;
+    if (isLoadPerson) {
+      body.style.overflow = "hidden";
+    } else {
+      body.style.overflow = "auto";
+    }
+  }, [isLoadPerson]);
+
   //Function
   const onHideHandler = () => {
     dispatch(userActions.toggleStatus("person", false));
@@ -49,16 +58,26 @@ function App() {
   const onScrollToReg = useCallback(() => {
     const headerBlock = document.querySelector(".header") as HTMLElement,
       registerBlock = document.querySelector(".register") as HTMLElement,
-      headerHeight = headerBlock?.clientHeight;
-    const offsetTop = registerBlock.offsetTop + headerHeight;
+      headerHeight = headerBlock.clientHeight,
+      offsetTop = registerBlock.offsetTop + headerHeight;
     window.scrollTo({
       top: offsetTop,
       behavior: "smooth",
     });
   }, []);
-  const onShowMore = useCallback(() => {
-    dispatch(thunkShowMore(new_Link!));
-  }, [new_Link]);
+  const onShowMore = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      dispatch(thunkShowMore(new_Link!));
+      const target = e.currentTarget as HTMLElement;
+      if (target) {
+        window.scrollTo({
+          top: target.offsetTop,
+          behavior: "smooth",
+        });
+      }
+    },
+    [new_Link]
+  );
   return (
     <>
       <Header mobileMenu={mobileMenu} onToggleHandler={onToggleHandler} />

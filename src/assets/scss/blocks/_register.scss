@@ -197,6 +197,7 @@
     &.error{
       + .form-register__file-wrapper .form-register__file-fake{
         border: 1px solid #CB3D40;
+        border-left: none;
       }
       + .form-register__file-wrapper .form-register__file-button{
         border: 1px solid #CB3D40;

@@ -23,6 +23,16 @@ interface IFails {
   count: string[];
   page: string[];
 }
+interface IErrorResponse {
+  success: boolean;
+  message: string;
+  fails?: any;
+}
+interface IRegisterNewPerson {
+  success: boolean;
+  user_id: number;
+  message: string;
+}
 export const URL_RESPONSE =
   "https://frontend-test-assignment-api.abz.agency/api/v1/users?page=1&count=6";
 
@@ -58,10 +68,13 @@ export const userActions = {
       type: "TASTTEST/TOGGLE_STATUS",
       payload: { name, value },
     } as const),
-  messageResponse: (value: string) =>
+  messageResponse: (
+    name: "users" | "person" | "showMore",
+    body: IErrorResponse
+  ) =>
     ({
       type: "TASKTEST/ERROR_RESPONSE",
-      payload: value,
+      payload: { name, body },
     } as const),
 };
 
@@ -98,10 +111,29 @@ export const usersReducers = (
       }
       return state;
     case "TASKTEST/ERROR_RESPONSE":
-      return {
-        ...state,
-        message: actions.payload,
-      };
+      if (actions.payload.name === "users") {
+        return {
+          ...state,
+          success: actions.payload.body.success,
+          message: actions.payload.body.message,
+          isLoadingUsers: actions.payload.body.success,
+        };
+      } else if (actions.payload.name === "person") {
+        return {
+          ...state,
+          success: actions.payload.body.success,
+          message: actions.payload.body.message,
+          isLoadingPerson: actions.payload.body.success,
+        };
+      } else if (actions.payload.name === "showMore") {
+        return {
+          ...state,
+          success: actions.payload.body.success,
+          message: actions.payload.body.message,
+          isLoadingMoreUsers: actions.payload.body.success,
+        };
+      }
+      return state;
     default:
       return state;
   }
@@ -120,16 +152,16 @@ export const thunkSetUser = (
       }
       return res.json();
     })
-    .then((res: IResponseGetUsers) => {
-      if (typeof res !== "string") {
-        dispatch(userActions.setUserApi(res));
+    .then((res) => {
+      if (res.success) {
+        dispatch(userActions.setUserApi(res as IResponseGetUsers));
       } else {
-        dispatch(userActions.messageResponse(res));
+        dispatch(userActions.messageResponse("users", objError(...res)));
       }
     })
     .catch((error) => {
+      dispatch(userActions.messageResponse("users", objError()));
       throw new Error(error);
-      dispatch(userActions.messageResponse("Ловим ошибку"));
     });
 };
 export const thunkShowMore = (
@@ -137,28 +169,20 @@ export const thunkShowMore = (
 ): ThunkActionType<actionsType> => async (dispatch) => {
   dispatch(userActions.toggleStatus("users", false));
   await fetch(url)
+    .then((res) => res.json())
     .then((res) => {
-      if (res.status === 404) {
-        return "Page not found";
-      } else if (res.status === 422) {
-        return "Validation failed";
-      }
-      return res.json();
-    })
-    .then((res: IResponseGetUsers) => {
-      if (typeof res !== "string") {
-        dispatch(userActions.showMoreStaff(res));
+      if (res.success) {
+        dispatch(userActions.showMoreStaff(res as IResponseGetUsers));
         dispatch(userActions.toggleStatus("users", true));
       } else {
-        dispatch(userActions.messageResponse(res));
+        dispatch(userActions.messageResponse("showMore", objError(...res)));
       }
     })
     .catch((error) => {
+      dispatch(userActions.messageResponse("showMore", objError()));
       throw new Error(error);
-      dispatch(userActions.messageResponse("Ловим ошибку"));
     });
 };
-
 export const thunkSetRegisterPerson = (
   url: string,
   formData: any,
@@ -172,27 +196,23 @@ export const thunkSetRegisterPerson = (
       Token: token,
     },
   })
-    .then((res) => {
-      if (res.status === 401) {
-        return "The token expired.";
-      } else if (res.status === 409) {
-        return "User with this phone or email already exist";
-      } else if (res.status === 422) {
-        return "Validation failed";
-      }
-      return res.json();
-    })
-    .then((res) => {
-      if (typeof res !== "string") {
+    .then((res) => res.json())
+    .then((res: IRegisterNewPerson | IErrorResponse) => {
+      if (res.success) {
         dispatch(thunkSetUser(URL_RESPONSE));
-        dispatch(userActions.messageResponse(res.message));
+        dispatch(
+          userActions.messageResponse(
+            "person",
+            objError(res.success, res.message)
+          )
+        );
       } else {
-        dispatch(userActions.messageResponse(res));
+        dispatch(userActions.messageResponse("person", res));
       }
       dispatch(userActions.toggleStatus("person", true));
     })
     .catch((error) => {
-      dispatch(userActions.messageResponse("прилетела ошибочка"));
+      dispatch(userActions.messageResponse("person", objError()));
       dispatch(userActions.toggleStatus("person", true));
       throw new Error(error);
     })
@@ -202,3 +222,10 @@ export const thunkSetRegisterPerson = (
       }, 5000);
     });
 };
+
+function objError(success: boolean = false, msg: string = "Ловим ошибку") {
+  return {
+    success: success,
+    message: msg,
+  };
+}

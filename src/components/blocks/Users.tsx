@@ -5,11 +5,12 @@ import { AppStateType } from "../Redux/Store";
 import { Loading } from "./elements/Loading";
 
 interface IUsersProp {
-  onShowMore: () => void;
+  onShowMore: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const Users: React.FC<IUsersProp> = React.memo(({ onShowMore }) => {
   const usersState = useSelector((state: AppStateType) => state.users);
+
   return (
     <section className={"users"}>
       <div className="users__container container">
@@ -43,20 +44,19 @@ export const Users: React.FC<IUsersProp> = React.memo(({ onShowMore }) => {
                   );
                 })}
             </div>
-            <div className="users__button">
-              {usersState.isLoadingMoreUsers ? (
-                <button
-                  className={!!usersState.links.next_url ? "btn" : "btn hide"}
-                  onClick={onShowMore}
-                >
-                  Show more
-                </button>
-              ) : (
-                <>
-                  <Loading />
-                </>
-              )}
-            </div>
+            {!!usersState.isLoadingMoreUsers && (
+              <div className="users__button">
+                {usersState.isLoadingMoreUsers ? (
+                  <button className={"btn"} onClick={onShowMore}>
+                    Show more
+                  </button>
+                ) : (
+                  <>
+                    <Loading />
+                  </>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <>
