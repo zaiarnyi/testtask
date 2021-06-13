@@ -195,5 +195,10 @@ export const thunkSetRegisterPerson = (
       dispatch(userActions.messageResponse("прилетела ошибочка"));
       dispatch(userActions.toggleStatus("person", true));
       throw new Error(error);
+    })
+    .finally(() => {
+      setTimeout(() => {
+        dispatch(userActions.toggleStatus("person", false));
+      }, 5000);
     });
 };
