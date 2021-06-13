@@ -1,25 +1,76 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect, useState } from "react";
+import { Header } from "./components/blocks/Header";
+import { Banner } from "./components/blocks/Banner";
+import { Dev } from "./components/blocks/Dev";
+import { Users } from "./components/blocks/Users";
+import { Register } from "./components/blocks/Register";
+import { Footer } from "./components/blocks/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import { AppStateType } from "./components/Redux/Store";
+import { thunkGetToken } from "./components/Redux/AppReducer";
+import { thunkGetPosition } from "./components/Redux/PositionReducer";
+import { Modal } from "./components/blocks/Modal";
+import {
+  thunkSetUser,
+  thunkShowMore,
+  URL_RESPONSE,
+  userActions,
+} from "./components/Redux/userReducer";
 
 function App() {
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const new_Link = useSelector(
+    (state: AppStateType) => state.users.links.next_url
+  );
+  const isLoadPerson = useSelector(
+    (state: AppStateType) => state.users.isLoadingPerson
+  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      thunkGetToken(
+        " https://frontend-test-assignment-api.abz.agency/api/v1/token"
+      )
+    );
+    dispatch(thunkSetUser(URL_RESPONSE));
+    dispatch(
+      thunkGetPosition(
+        "https://frontend-test-assignment-api.abz.agency/api/v1/positions"
+      )
+    );
+  }, []);
+  //Function
+  const onHideHandler = () => {
+    dispatch(userActions.toggleStatus("person", false));
+  };
+  const onToggleHandler = useCallback(() => {
+    setMobileMenu(!mobileMenu);
+  }, [mobileMenu]);
+  const onScrollToReg = useCallback(() => {
+    const headerBlock = document.querySelector(".header") as HTMLElement,
+      registerBlock = document.querySelector(".register") as HTMLElement,
+      headerHeight = headerBlock?.clientHeight;
+    const offsetTop = registerBlock.offsetTop + headerHeight;
+    window.scrollTo({
+      top: offsetTop,
+      behavior: "smooth",
+    });
+  }, []);
+  const onShowMore = useCallback(() => {
+    dispatch(thunkShowMore(new_Link!));
+  }, [new_Link]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header mobileMenu={mobileMenu} onToggleHandler={onToggleHandler} />
+      <main className={!mobileMenu ? "page" : "page hide-mobile"}>
+        <Banner onScrollToReg={onScrollToReg} />
+        <Dev onScrollToReg={onScrollToReg} />
+        <Users onShowMore={onShowMore} />
+        <Register />
+      </main>
+      {isLoadPerson && <Modal hide={onHideHandler} />}
+      <Footer />
+    </>
   );
 }
 

@@ -1,0 +1,298 @@
+.register{
+  padding-top: 175px;
+  padding-bottom: 180px;
+  position: relative;
+  //background-image: url('../../img/cat-paws.svg');
+  //background-position: 70% 100%;
+  //background-repeat: no-repeat;
+  //background-size: 70%;
+  &__container{}
+  &__top{
+    text-align: center;
+    margin-bottom: 35px;
+  }
+  &__title{
+    margin-bottom: 12px;
+  }
+  &__subtitle{}
+  &__body{
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  &__bg{
+    position: absolute;
+    bottom: 0;
+    @include adaptiv-value('right',0,-450,1);
+    width: 972px;
+    height: 177px;
+    img{
+      max-width: 100%;
+    }
+  }
+}
+.form-register{
+  //Input
+  &__info{
+    margin-bottom: 33px;
+  }
+  &__row{
+    position: relative;
+    margin-bottom: 50px - 19px;
+    &:last-child{
+      margin: 0;
+    }
+  }
+  &__label{
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-100%);
+    font-size: 16px;
+    color: #7E7E7E;
+    transition: all 0.3s ease;
+    &:after{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--grey);
+      z-index: -1;
+    }
+  }
+  &__input{
+    display: inline-block;
+    width: 100%;
+    border: 1px solid #D0CFCF;
+    border-radius: 4px;
+    background-color: transparent;
+    height: 54px;
+    padding: 0 16px;
+    color:var(--black);
+    &::placeholder{
+      opacity: 0;
+      transition: all .3s ease 0s;
+      color: #7E7E7E;
+    }
+    &:focus::placeholder{
+      opacity: 1;
+      transition: all .3s ease 0.1s;
+    }
+    &:focus{
+      border: 1px solid var(--blue);
+    }
+    &:focus ~ .form-register__helper{
+      opacity: 1;
+      visibility: visible;
+    }
+    &:focus + .form-register__label{
+      top: 0;
+      transform: translateY(-50%);
+      color:var(--blue);
+    }
+    &.empty + .form-register__label{
+      top: 0;
+      transform: translateY(-50%);
+      color:var(--blue);
+    }
+    &.empty ~ .form-register__helper{
+      opacity: 1;
+      visibility: visible;
+    }
+    &.error{
+      border: 1px solid #CB3D40;
+      ~ .form-register__helper .form-register__helper-text{
+        color:#CB3D40;
+      }
+    }
+    &.error + .form-register__label{
+      color:#CB3D40;
+      top: 0;
+      transform: translateY(-50%);
+    }
+
+
+  }
+  //Radio Buttons
+  &__label-select{
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 18px;
+  }
+  &__select{
+    margin-bottom: 49px;
+  }
+  &__radio{
+    margin-bottom: 15px;
+  }
+  &__radio-input{
+    display: none;
+    &:checked + .form-register__radio-label:after{
+      width: 10px;
+      height: 10px;
+    }
+    &:checked + .form-register__radio-label:before{
+      border: 1px solid var(--blue);
+    }
+  }
+  &__radio-label{
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 20px + 12px;
+    margin-right: 0;
+    line-height: 18px;
+    user-select: none;
+    &:before {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      border: 1px solid #D0CFCF;
+      transition: all 0.3s ease;
+    }
+    &:after{
+      content: "";
+      display: inline-block;
+      width: 0px;
+      height: 0px;
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      border-radius: 50%;
+      background-color: var(--blue);
+      transition: all 0.3s ease;
+    }
+  }
+  //File Input
+  &__upload{
+    position: relative;
+    text-align: center;
+    margin-bottom: 44px;
+  }
+  &__file{
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    &:disabled{
+      pointer-events: none;
+      + .form-register__file-wrapper .form-register__file-fake{
+        border: 1px solid #D0CFCF;
+        color: #D0CFCF;
+        pointer-events: none;
+      }
+      + .form-register__file-wrapper .form-register__file-button{
+        border: 1px solid #D0CFCF;
+        color: #D0CFCF;
+        pointer-events: none;
+      }
+    }
+    &.error{
+      + .form-register__file-wrapper .form-register__file-fake{
+        border: 1px solid #CB3D40;
+      }
+      + .form-register__file-wrapper .form-register__file-button{
+        border: 1px solid #CB3D40;
+      }
+      ~ .form-register__helper{
+        opacity: 1;
+        visibility: visible;
+        .form-register__helper-text{
+          color:#CB3D40;
+        }
+      }
+    }
+  }
+  &__file-wrapper{
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-wrap: wrap;
+    //flex-wrap: wrap;
+  }
+  &__file-fake{
+    height: 54px;
+    flex: 1 1 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0 15px;
+    border: 1px solid #D0CFCF;
+    border-left:none ;
+    border-radius: 0px 4px 4px 0px;
+    color:#7E7E7E;
+    transition: border 0.3s ease;
+    &:hover{
+      border:1px solid var(--black);
+      border-left:none ;
+    }
+  }
+  &__file-button{
+    width: 83px;
+    height: 54px;
+    background: transparent;
+    color: var(--black);
+    font-weight: 700;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border: 1px solid var(--black);
+    border-radius: 4px 0px 0px 4px;
+    cursor: pointer;
+    transition: border 0.3s ease;
+  }
+  //Button
+  &__button .btn{
+    margin: 0 auto;
+  }
+  &__helper{
+    padding: 7px 16px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.87);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  &__helper-text{}
+  &__helper-count{
+
+  }
+}
+
+@media (max-width: $md2 + px) {
+  .register{
+    padding-top: 174px;
+  }
+  .form-register__info {
+    margin-bottom: 30px;
+  }
+  .form-register__select {
+    margin-bottom: 50px;
+  }
+}
